@@ -11,7 +11,7 @@ function of(x) {
     return Store(identity, identity);
 }
 
-exports.coproduct = {
+exports.store = {
 
     // Functor tests
     'All (Functor)': functor.laws(λ)(of, identity),
