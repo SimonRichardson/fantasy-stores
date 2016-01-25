@@ -2,37 +2,28 @@
 
 const daggy = require('daggy');
 const {constant} = require('fantasy-combinators');
+const {extract, extend, map} = require('fantasy-land');
 
 const Store = daggy.tagged('set', 'get');
-
 
 // Methods
 Store.prototype.extract = function() {
     return this.set(this.get());
 };
 Store.prototype.extend = function(f) {
-    var self = this;
     return Store(
-        (k) => {
-            return f(Store(
-                self.set,
-                () => k
-            ));
-        },
+        (k) => f(Store(this.set, () => k)),
         this.get
     );
 };
 
 // Derived
 Store.prototype.map = function(f) {
-    var self = this;
-    return self.extend((c) => f(self.get()));
+    return this.extend((c) => f(this.get()));
 };
 
 Store.prototype.over = function(f) {
     return this.set(f(this.get()));
 };
 
-// Export
-if(typeof module != 'undefined')
-    module.exports = Store;
+module.exports = Store;
